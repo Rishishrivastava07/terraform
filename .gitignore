@@ -15,6 +15,7 @@ terraform.tfstate.backup
 *.key
 .aws/
 *.pub
-terra-key_ec2
+terra-key-ec2
+terra-key-ec2.pub
 # OS
 .DS_Store

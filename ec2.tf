@@ -24,11 +24,10 @@ resource "aws_security_group" "allow_ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-
   ingress {
-    description = "SSH from anywhere"
-    from_port   = 22
-    to_port     = 22
+    description = "HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -44,18 +43,19 @@ resource "aws_security_group" "allow_ssh" {
 # EC2 Instance
 
 resource "aws_instance" "my_ec2_instance" {
-  ami           = "ami-0ff5003538b60d5ec" # Amazon Linux 2 AMI (HVM), SSD Volume Type
-  instance_type = "t3.micro"
-  key_name      = aws_key_pair.my_key_pair.key_name
+  ami             = var.ec2_ami_id
+  instance_type   = var.ec2_instance_type
+  key_name        = aws_key_pair.my_key_pair.key_name
   security_groups = [aws_security_group.allow_ssh.name]
+  user_data       = file("nginx.sh")
 
   tags = {
     Name = "MyEC2Instance"
   }
 
   root_block_device {
-    volume_size = 8
+    volume_size = var.root_storage_size
     volume_type = "gp3"
   }
-}       
+}
 
