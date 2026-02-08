@@ -43,6 +43,7 @@ resource "aws_security_group" "allow_ssh" {
 # EC2 Instance
 
 resource "aws_instance" "my_ec2_instance" {
+  count           = 3 # Create 3 EC2 instances
   ami             = var.ec2_ami_id
   instance_type   = var.ec2_instance_type
   key_name        = aws_key_pair.my_key_pair.key_name
@@ -54,7 +55,7 @@ resource "aws_instance" "my_ec2_instance" {
   }
 
   root_block_device {
-    volume_size = var.root_storage_size
+    volume_size = var.env == "production" ? 10 : var.default_root_storage_size # 10 GB for production, default for others
     volume_type = "gp3"
   }
 }
